@@ -1,0 +1,63 @@
+printf "%s\n" "==Razrabotal: Yakovlev Michail" "==Programma: Proverka na zhestkuyu ssilku" "==Eta programma:" "  -zaprashivaet put k 1 failu;" "  -zaprashivaet put k 2 failu;" "  -proveriaet, yavliayutsia li vvedennie imena failov zhestkimi ssilkami na odin i tot zhe fail. \n"
+startflag=0
+
+while [[ startflag -eq 0 ]]
+do
+	checkflag=0
+	foo=0
+	bar=0
+	echo "==Nachat proverku? (y|Y - da n|N - vihod)"
+	read item
+
+	case "$item" in
+	y|Y)
+		errorflag=0
+
+		for index in 1 2
+		do
+			echo "Vvedite imia $index faila..."
+			read file
+			while [ ! -f "$file" ]
+			do
+				echo "Fail ne sushestvuet!"
+				echo "Vvedite imia $index faila..."
+				read file
+			done
+			
+			let foo=$(stat --format=%i $file)
+			
+			if [[ checkflag -eq 0 ]]
+			then
+				bar=$foo
+				checkflag=1
+
+			elif [[ $bar -eq $foo ]]
+			then
+				echo "Vvedenie imena failov iavliayutsia zhestkimi ssilkami na odin fail."
+			else
+				errorflag=1
+				echo "Oshibka. Vvedenie imena failov ne iavliayutsia zhestkimi ssilkami na odin fail."
+
+			fi
+
+		done
+	;;
+
+	n|N)
+		if [[ errorflag -eq 1 ]]
+		then
+			echo "Programa zavershena s oshibkoy. Kod oshibki 250."
+			exit 250;
+		else
+			echo "Programa zavershena s oshibkoy."
+			exit;
+
+		fi
+	;;
+
+	*)
+		echo "Vvedite 'y|Y' or 'n|N'!"
+	;;
+	esac
+
+done
